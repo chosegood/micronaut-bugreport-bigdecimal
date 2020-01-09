@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: micronaut.bugreport.bigdecimal
+---
+testFramework: kotlintest
+sourceLanguage: kotlin
