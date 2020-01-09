@@ -34,7 +34,7 @@ class BugControllerTest {
     }
 
     @Test
-    fun foo() {
+    fun retainsPrecision() {
         val httpClient = HttpClients.createDefault()
 
         val initialDataset = mapOf<String, Any?>(
