@@ -4,5 +4,8 @@ micronaut:
 
 jackson:
   serialization-inclusion: "USE-DEFAULTS"
-  serialization:
+  generator:
     WRITE_BIGDECIMAL_AS_PLAIN: true
+    WRITE_NUBMERS_AS_STRINGS: true
+  deserialization:
+    USE_BIG_DECIMAL_FOR_FLOATS: true

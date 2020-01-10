@@ -1,6 +1,6 @@
 package micronaut.bugreport.bigdecimal
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.HttpHeaders
@@ -34,7 +34,22 @@ class BugControllerTest {
     }
 
     @Test
-    fun retainsPrecision() {
+    fun jacksonRetainsPrecision() {
+        val objectMapper = embeddedServer.applicationContext.getBean(ObjectMapper::class.java)
+
+        val initialDataset = mapOf<String, Any?>(
+                "string" to "string",
+                "bigDecimal" to BigDecimal("888.7794538169553400000")
+        )
+
+        val writeValueAsString = objectMapper.writeValueAsString(initialDataset)
+        val responseDataset = objectMapper.readValue<Map<String, Any?>>(writeValueAsString)
+        assertThat(responseDataset, equalTo(initialDataset))
+    }
+
+    @Test
+    fun micronautRetainsPrecision() {
+        val objectMapper = embeddedServer.applicationContext.getBean(ObjectMapper::class.java)
         val httpClient = HttpClients.createDefault()
 
         val initialDataset = mapOf<String, Any?>(
@@ -44,13 +59,13 @@ class BugControllerTest {
 
         val postRequest = HttpPost(embeddedServer.uri.resolve("/bug"))
         postRequest.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
-        postRequest.entity = GzipCompressingEntity(EntityTemplate { out -> jacksonObjectMapper().writeValue(out, initialDataset) })
+        postRequest.entity = GzipCompressingEntity(EntityTemplate { out -> objectMapper.writeValue(out, initialDataset) })
 
         httpClient.execute(postRequest, BasicResponseHandler())
 
         val getRequest = HttpGet(embeddedServer.uri.resolve("/bug"))
         val getResponse = httpClient.execute(getRequest, BasicResponseHandler())
-        val responseDataset = jacksonObjectMapper().readValue<Map<String, Any?>>(getResponse)
+        val responseDataset = objectMapper.readValue<Map<String, Any?>>(getResponse)
         assertThat(responseDataset, equalTo(initialDataset))
     }
 
