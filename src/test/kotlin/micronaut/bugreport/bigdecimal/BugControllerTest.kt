@@ -42,8 +42,8 @@ class BugControllerTest {
                 "bigDecimal" to BigDecimal("888.7794538169553400000")
         )
 
-        val writeValueAsString = objectMapper.writeValueAsString(initialDataset)
-        val responseDataset = objectMapper.readValue<Map<String, Any?>>(writeValueAsString)
+        val writeValueAsBytes = objectMapper.writeValueAsBytes(initialDataset)
+        val responseDataset = objectMapper.readValue<Map<String, Any?>>(writeValueAsBytes)
         assertThat(responseDataset, equalTo(initialDataset))
     }
 
