@@ -49,8 +49,9 @@ class BugControllerTest {
 
     @Test
     fun micronautRetainsPrecision() {
-        val objectMapper = embeddedServer.applicationContext.getBean(ObjectMapper::class.java)
         val httpClient = HttpClients.createDefault()
+
+        val objectMapper = embeddedServer.applicationContext.getBean(ObjectMapper::class.java)
 
         val initialDataset = mapOf<String, Any?>(
                 "string" to "string",
